@@ -16,6 +16,18 @@ def check_path(path):
     
     if not path.exists():
         raise ValueError(f"Путь '{path}' не существует")
+    
+def get_ext(content_type):
+    """Определяет расширение файла из Content-Type."""
+    mime_to_ext = {
+        'image/jpeg': '.jpg',
+        'image/jpg': '.jpg',
+        'image/png': '.png',
+        'image/gif': '.gif',
+        'image/bmp': '.bmp',
+    }
+    
+    return mime_to_ext.get(content_type, '.jpg')
 
 """Синхронное скачивание"""
 def synch_download_files(path, URL, count_files = 5):
@@ -38,7 +50,9 @@ def synch_download_files(path, URL, count_files = 5):
             if not content_type.startswith('image/'):
                 raise Exception(f"URL не возвращает изображение (Content-Type: {content_type})")
 
-            filename = f"synch_{file_number}.jpg"
+            ext = get_ext(content_type)
+
+            filename = f"synch_{file_number}{ext}"
             filepath = os.path.join(path, filename)
             with open(f'{filepath}', 'wb') as f:
                 f.write(cont.content)
@@ -88,11 +102,13 @@ async def download_file(session, path, URL, file_number):
             content_type = response.headers.get('content-type', '').lower()
             if not content_type.startswith('image/'):
                 raise ValueError(f"URL не возвращает изображение (Content-Type: {content_type})")
+
+            ext = get_ext(content_type)
             
             # Читаем содержимое файла
             content = await response.read()
             
-            filename = f"asynch_{file_number}.jpg"
+            filename = f"asynch_{file_number}{ext}"
             filepath = os.path.join(path, filename)
             # Записываем файл
             async with aiofiles.open(filepath, 'wb') as f:
@@ -110,17 +126,17 @@ async def download_file(session, path, URL, file_number):
 def main():
     """Точка входа."""
     parser = argparse.ArgumentParser(description='Анализ структуры файлов и папок')
-    parser.add_argument('--path', type=str, required=True, 
-                       help='Путь к папке ')
+    # parser.add_argument('--path', type=str, required=True, 
+    #                    help='Путь к папке ')
     
-    parser.add_argument('--url', type=str, required=True, 
-                       help='URL')
+    # parser.add_argument('--url', type=str, required=True, 
+    #                    help='URL')
 
 
     args = parser.parse_args()
 
-    # args.path = '/home/user/dev/images'
-    # args.url = 'https://placebeard.it/1280x720' # 'https://placebear.com/g/200/300'
+    args.path = '/home/user/dev/images'
+    args.url =  'https://placebear.com/g/200/300' # 'https://placebeard.it/1280x720'
     
     # Синхронное скачивание
     try: 
