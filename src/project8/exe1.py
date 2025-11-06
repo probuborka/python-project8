@@ -110,17 +110,17 @@ async def download_file(session, path, URL, file_number):
 def main():
     """Точка входа."""
     parser = argparse.ArgumentParser(description='Анализ структуры файлов и папок')
-    # parser.add_argument('--path', type=str, required=True, 
-    #                    help='Путь к папке ')
+    parser.add_argument('--path', type=str, required=True, 
+                       help='Путь к папке ')
     
-    # parser.add_argument('--url', type=str, required=True, 
-    #                    help='URL')
+    parser.add_argument('--url', type=str, required=True, 
+                       help='URL')
 
 
     args = parser.parse_args()
 
-    args.path = '/home/user/dev/images'
-    args.url =  'https://placebear.com/g/200/300' # 'https://placebeard.it/1280x720'
+    # args.path = '/home/user/dev/images'
+    # args.url = 'https://placebeard.it/1280x720' # 'https://placebear.com/g/200/300'
     
     # Синхронное скачивание
     try: 
@@ -129,6 +129,7 @@ def main():
         execution_time_1 = time.time() - start_time
     except Exception as e:
         print(f"Ошибка: {e}")
+        return
     
     # Асинхронное скачивание
     try: 
@@ -137,6 +138,7 @@ def main():
         execution_time_2 = time.time() - start_time
     except Exception as e:
         print(f"Ошибка: {e}")
+        return
 
     #
     print(f"Время выполнения синхронного скачивания: {execution_time_1}")
