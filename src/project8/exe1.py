@@ -34,6 +34,10 @@ def synch_download_files(path, URL, count_files = 5):
             
             cont = requests.get(URL)
 
+            content_type = cont.headers.get('content-type', '')
+            if not content_type.startswith('image/'):
+                raise Exception(f"URL не возвращает изображение (Content-Type: {content_type})")
+
             filename = f"synch_{file_number}.jpg"
             filepath = os.path.join(path, filename)
             with open(f'{filepath}', 'wb') as f:
@@ -81,6 +85,10 @@ async def download_file(session, path, URL, file_number):
             # Проверяем успешность запроса
             response.raise_for_status()
                       
+            content_type = response.headers.get('content-type', '').lower()
+            if not content_type.startswith('image/'):
+                raise ValueError(f"URL не возвращает изображение (Content-Type: {content_type})")
+            
             # Читаем содержимое файла
             content = await response.read()
             
@@ -102,17 +110,17 @@ async def download_file(session, path, URL, file_number):
 def main():
     """Точка входа."""
     parser = argparse.ArgumentParser(description='Анализ структуры файлов и папок')
-    parser.add_argument('--path', type=str, required=True, 
-                       help='Путь к папке ')
+    # parser.add_argument('--path', type=str, required=True, 
+    #                    help='Путь к папке ')
     
-    parser.add_argument('--url', type=str, required=True, 
-                       help='URL')
+    # parser.add_argument('--url', type=str, required=True, 
+    #                    help='URL')
 
 
     args = parser.parse_args()
 
-    # args.path = '/home/user/dev/images'
-    # args.url = 'https://placebear.com/g/200/300'
+    args.path = '/home/user/dev/images'
+    args.url =  'https://placebear.com/g/200/300' # 'https://placebeard.it/1280x720'
     
     # Синхронное скачивание
     try: 
