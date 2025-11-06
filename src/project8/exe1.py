@@ -126,17 +126,17 @@ async def download_file(session, path, URL, file_number):
 def main():
     """Точка входа."""
     parser = argparse.ArgumentParser(description='Анализ структуры файлов и папок')
-    # parser.add_argument('--path', type=str, required=True, 
-    #                    help='Путь к папке ')
+    parser.add_argument('--path', type=str, required=True, 
+                       help='Путь к папке ')
     
-    # parser.add_argument('--url', type=str, required=True, 
-    #                    help='URL')
+    parser.add_argument('--url', type=str, required=True, 
+                       help='URL')
 
 
     args = parser.parse_args()
 
-    args.path = '/home/user/dev/images'
-    args.url =  'https://placebear.com/g/200/300' # 'https://placebeard.it/1280x720'
+    # args.path = '/home/user/dev/images'
+    # args.url =  'https://placebear.com/g/200/300' # 'https://placebeard.it/1280x720'
     
     # Синхронное скачивание
     try: 
